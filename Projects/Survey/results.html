@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>survey</title>
+		<link rel = "stylesheet" type = "text/css" href = results.css />
+	</head>
+	<body>
+		<div id="header">Survey Crunch</div>
+		<div id="content">
+		<script type="text/javascript">
+
+
+			var url = window.location.href;
+
+			var info = url.split("?");
+
+			var surveyValues = info[1].split("&");
+
+			questionValues = {};
+
+			for (var i = 0; i < surveyValues.length; i++)
+			{
+				var map = surveyValues[i].split("=");
+				var question = map[0];
+				var answer = map[1];
+				questionValues[question] = answer;
+			}
+
+
+			if(!localStorage.results)
+			{
+				var result = [0,0,0,0,0,0]
+			}
+			else
+			{
+				var str = localStorage.getItem("results");
+				var result = JSON.parse(str);
+			}
+
+			var netflixDiv = document.createElement("div")
+			if (questionValues.netflix == "yes")
+			{
+				result[0]++;
+				netflixDiv.style.color = 'green';
+			}
+			if (questionValues.netflix == "no")
+			{
+				result[1]++;
+				netflixDiv.style.color = 'red';
+			}
+
+			var amazonDiv = document.createElement("div");
+			if (questionValues.amazon == "yes")
+			{
+				result[2]++;
+				amazonDiv.style.color = 'green';
+			}
+			if (questionValues.amazon == "no")
+			{
+				result[3]++;
+				amazonDiv.style.color = 'red';
+			}
+
+			var huluDiv = document.createElement("div");
+			if (questionValues.hulu == "yes")
+			{
+				result[4]++;
+				huluDiv.style.color = 'green';
+			}
+			if (questionValues.hulu == "no")
+			{
+				result[5]++;
+				huluDiv.style.color = 'red';
+			}
+
+
+
+			var str = JSON.stringify(result);
+			localStorage.results = str;
+
+			netflixDiv.innerHTML = "You said " + questionValues.netflix + " to using Netflix <br>"
+			document.body.appendChild(netflixDiv);
+			amazonDiv.innerHTML = "You said " + questionValues.amazon + " to using Amazon Prime<br>"
+			document.body.appendChild(amazonDiv);
+			huluDiv.innerHTML = "You said " + questionValues.hulu + " to using Hulu <br><br>"
+			document.body.appendChild(huluDiv);
+
+			var allresultsDiv = document.createElement("div");
+			allresultsDiv.innerHTML = "TOTAL RESULTS: <br><br>" +
+									  "Yes to Netflix: " + result[0] + "<br>" +
+									  "No to Netflix: " + result[1] + "<br>" +
+									  "Yes to Amazon Prime: " + result[2] + "<br>" +
+									  "No to Amazon Prime: " + result[3] + "<br>" +
+									  "Yes to Hulu: " + result[4] + "<br>" +
+									  "No to Hulu: " + result[5] + "<br>";
+			document.body.appendChild(allresultsDiv);
+
+		
+
+		</script>
+	</div>
+
+		
+			
+	</body>
+</html>

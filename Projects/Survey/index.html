@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>survey</title>
+		<link rel = "stylesheet" type = "text/css" href = results.css />
+
+		<script type="text/javascript">
+			function validate()
+			{
+
+				//check if user enters valid first name
+				var fname = document.forms["signUpForm"]["firstname"].value;
+			    var validName = /^[a-z ,.'-]+$/i;
+
+
+			    //var nameDiv = document.createElement(div);
+				if (fname.search(validName))
+				{
+					nameDiv.style.color = 'red';
+					fnameError.style.color = 'red';
+					document.getElementById('fnameError').innerHTML = "Please enter a valid first name";
+
+
+					return false;
+				}
+				else
+				{
+					document.getElementById('fnameError').innerHTML = "";
+				}
+				
+				//check if user enters valid last name
+				var lname = document.forms["signUpForm"]["lastname"].value;
+				if (lname.search(validName))
+
+				{
+					lnameError.style.color = 'red';
+					document.getElementById('lnameError').innerHTML = "Please enter a valid last name";
+					return false;
+				}
+				else
+				{
+					document.getElementById('lnameError').innerHTML = "";
+				}
+
+				//check if user enters a valid email 
+				var mail = document.forms["signUpForm"]["email"].value;
+				var validEmail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(com|edu|gov|net|org|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+
+				if (mail.search(validEmail))
+				{
+					emailError.style.color = 'red';
+					document.getElementById('emailError').innerHTML = "Please enter a valid email";
+					return false;
+				}
+				else
+				{
+					document.getElementById('emailError').innerHTML = "";
+				}
+
+				//check if user enters a valid password
+				var pw = document.forms["signUpForm"]["password"].value;
+				var validPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
+
+				if (pw.search(validPassword))
+				{
+					passwordError.style.color = 'red';
+					document.getElementById('passwordError').innerHTML = "Password must contain 8-16 characters<br>" +
+																		 "At least one uppercase letter<br>" + 
+																		 "At least one lowercase letter<br>" +
+																		 "At least one number<br>";
+
+					return false;
+				}
+				else
+				{
+					document.getElementById('passwordError').innerHTML = "";
+				}
+			}
+			
+			
+		</script>
+		
+	</head>
+	<body>
+		<div id="header">Survey Crunch</div>
+		<div id="content">
+		<form name = "signUpForm" action="survey.html" onsubmit = "return validate()" method = "GET">
+			<div class = "signUp">
+			<label>First Name</label> 
+			<input type = "text" name = "firstname" value = "firstname"> <div id = "fnameError"></div> 
+			<label>Last Name</label>
+			<input type = "text" name = "lastname" value = "lastname"> <div id = "lnameError"></div>
+			<label>Email</label>
+			<input type = "text" name = "email" value = "email"> <div id = "emailError"></div>
+			<label>Password</label>
+			<input type = "password" name = "password" value = "password"> <div id = "passwordError"></div>
+			</div>
+			<input type="submit" value="submit">
+		</form>
+		</div>
+	</body>
+</html>

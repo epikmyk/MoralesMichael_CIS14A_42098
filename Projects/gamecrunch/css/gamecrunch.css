@@ -1,0 +1,109 @@
+#header {
+	text-align: left;
+	
+	width: 910px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#content {
+	text-align: center;			
+	width: 910px;						
+	overflow: auto;								
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;			
+	padding: 5px;
+}
+#menu_bar {
+	text-align: center;
+	width: 910px;
+	border: thick solid #eeeeee;
+	background-color: #eeeeee;
+
+	overflow: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
+}
+
+#account_bar, #shopping_bar {
+	display: inline;
+}
+
+#account_bar {
+	margin-left: 100px;
+}
+
+#signinform, #signupform {
+	text-align: center;
+	background-color: #eeeeee;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px;
+	margin-top: 40px;
+	width: 300px;
+}
+
+#signupform {
+	margin-bottom: 50px;
+}
+
+#create_account, #signIn {
+	margin-top: 20px;
+}
+
+#gamelist {
+	text-align: left;
+	margin: 20px;
+}
+
+#footer {
+	border-top: 1px solid black;
+}
+
+a:link {
+	border-right: 1px solid white;
+	font-weight: bold;
+	color: #4A708B;
+	text-decoration: none;
+	border-bottom: none;
+	padding-right: 10px;
+	margin-left: 20px;
+}
+
+a:visited {
+	border-right: 1px solid white;
+	font-weight: bold;
+	color:#4A708B;
+	text-decoration: none;
+	border-bottom: none;
+}
+
+a:hover {
+	border-right: 1px solid white;
+	color: #CD0000;
+	text-decoration: none;
+	border-bottom: none;
+}
+
+#header a:link {
+	border-right: none;
+	color: none;
+}
+
+#header a:visited {
+	border-right: none;
+	color: none;
+}
+
+#header a:hover {
+	border-right: none;
+	color: none;
+}
+
+#noaccount {
+	margin-bottom: 50px;
+}
+#noaccount a:link{
+	margin-left: 5px;
+}

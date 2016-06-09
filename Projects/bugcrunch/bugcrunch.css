@@ -1,0 +1,54 @@
+
+#background{
+	z-index: 1;
+	 margin: auto;
+    display: block;
+    
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+}
+#bug{
+	z-index: 2;
+	 margin: auto;
+    display: block;
+    
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+}
+
+#rock{
+	z-index: 3;
+	 margin: auto;
+    display: block;
+   
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+}
+
+#score{
+	z-index: 4;
+	 margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+}
+
+body{
+	background-color: #ddddde;
+}

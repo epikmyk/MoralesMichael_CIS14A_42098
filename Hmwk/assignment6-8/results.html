@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>survey</title>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+
+			var url = window.location.href;
+
+			var info = url.split("?");
+
+			var surveyValues = info[1].split("&");
+
+			questionValues = {};
+
+			for (var i = 0; i < surveyValues.length; i++)
+			{
+				var map = surveyValues[i].split("=");
+				var question = map[0];
+				var answer = map[1];
+				questionValues[question] = answer;
+			}
+
+
+			if(!localStorage.results)
+			{
+				var result = [0,0,0,0,0,0]
+			}
+			else
+			{
+				var str = localStorage.getItem("results");
+				var result = JSON.parse(str);
+			}
+
+			var militaryDiv = document.createElement("div")
+			if (questionValues.military == "greater")
+			{
+				result[0]++;
+				militaryDiv.style.color = 'red';
+			}
+			if (questionValues.military == "less")
+			{
+				result[1]++;
+				militaryDiv.style.color = 'green';
+			}
+
+			var nasaDiv = document.createElement("div");
+			if (questionValues.nasa == "greater")
+			{
+				result[2]++;
+				nasaDiv.style.color = 'red';
+			}
+			if (questionValues.nasa == "less")
+			{
+				result[3]++;
+				nasaDiv.style.color = 'green';
+			}
+
+			var welfareDiv = document.createElement("div");
+			if (questionValues.welfare == "greater")
+			{
+				result[4]++;
+				welfareDiv.style.color = 'green';
+			}
+			if (questionValues.welfare == "less")
+			{
+				result[5]++;
+				welfareDiv.style.color = 'red';
+			}
+
+			var str = JSON.stringify(result);
+			localStorage.results = str;
+
+
+			function displayResults()
+			{
+
+				document.write("YOUR ANSWERS: <br><br>")
+				militaryDiv.innerHTML = "Military budget is " + questionValues.military + " than 20% <br>"
+				document.body.appendChild(militaryDiv);
+				nasaDiv.innerHTML = "NASA budget is " + questionValues.nasa + " than 5% <br>"
+				document.body.appendChild(nasaDiv);
+				welfareDiv.innerHTML = "Welfare budget is " + questionValues.welfare + " than 65% <br><br>"
+				document.body.appendChild(welfareDiv);
+
+				document.write("TOTAL RESULTS: <br><br>")
+				document.write("Military greater than 20%: " + result[0] + "<br>");
+				document.write("Military less than 20%: " + result[1] + "<br>");
+				document.write("NASA greater than 5%: " + result[2] + "<br>");
+				document.write("NASA less than 5%: " + result[3] + "<br>");
+				document.write("Welfare greater than 65%: " + result[4] + "<br>");
+				document.write("Welfare less than 65%: " + result[5] + "<br>");
+				
+			}
+
+		</script>
+
+		<button type = "button" onclick = "displayResults()">Display Results</button>
+			
+	</body>
+</html>
