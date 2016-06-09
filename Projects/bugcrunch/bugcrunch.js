@@ -8,25 +8,25 @@ building something from the ground up and watching it in action is great!*/
 
 var init = function()
 {
-	this.bgw = 960;
-	this.bgh = 600;
-	this.lastSec = 0;
-	this.bugx = 400;
+    this.bgw = 960;
+    this.bgh = 600;
+    this.lastSec = 0;
+    this.bugx = 400;
     this.bugy = 480;
     this.bugw = 115;
     this.bugh = 100;
     this.rockArrayLength = 5;
     //initialize array for random rock positions
     this.randObjArry = [];
-	for (var i = 0; i < rockArrayLength; i++)
+    for (var i = 0; i < rockArrayLength; i++)
+    {
+	this.randxy = 
 	{
-		this.randxy = 
-		{
 		randx: Math.floor(Math.random() * (750 - 1) + 1),
 		randy: Math.floor(Math.random() * (750 - 1) + 1) - 1000
-		};
-		this.randObjArry.push(this.randxy);
-	}
+	};
+	this.randObjArry.push(this.randxy);
+    }
 
     this.rockw = 100;
     this.rockh = 90;
