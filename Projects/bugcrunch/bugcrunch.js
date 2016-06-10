@@ -18,10 +18,10 @@ var bgimg = "images/startScreen.png";
 var init = function()
 {
 
-	this.bgw = 960;
-	this.bgh = 600;
-	this.lastSec = 0;
-	this.bugx = 400;
+    this.bgw = 960;
+    this.bgh = 600;
+    this.lastSec = 0;
+    this.bugx = 400;
     this.bugy = 480;
     this.bugw = 115;
     this.bugh = 100;
@@ -32,15 +32,15 @@ var init = function()
     this.rockArrayLength = 5;
     //initialize array for random rock positions
     this.randObjArry = [];
-	for (var i = 0; i < rockArrayLength; i++)
+    for (var i = 0; i < rockArrayLength; i++)
+    {
+	this.randxy = 
 	{
-		this.randxy = 
-		{
-			randx: Math.floor(Math.random() * (750 - 1) + 1),
-			randy: Math.floor(Math.random() * (750 - 1) + 1) - 1000
-		};
-		this.randObjArry.push(this.randxy);
-	}
+		randx: Math.floor(Math.random() * (750 - 1) + 1),
+		randy: Math.floor(Math.random() * (750 - 1) + 1) - 1000
+	};
+	this.randObjArry.push(this.randxy);
+    }
 
     this.rockw = 100;
     this.rockh = 90;
@@ -116,8 +116,8 @@ var startMenu = function()
 				bgimg = 'images/sky.png';
 				bgObj.src = bgimg;
 				ctx.drawImage(bgObj, 0, 0, bgw, bgh);
-    			this.movement = "none";
-    			var gameloop = setInterval(startGame, 20);
+    				this.movement = "none";
+    				var gameloop = setInterval(startGame, 20);
 				break;
 			default:
 		}
@@ -256,11 +256,11 @@ var startGame = function()
 				case 13: 
 					ctx.clearRect(0, 0, canvas.width, canvas.height);
 					bgimg = 'images/sky.png';
-    				this.movement = "none";
-    				displayHighScore.clearScore();
-    				init();
-				break;
-			default:
+    					this.movement = "none";
+    					displayHighScore.clearScore();
+    					init();
+					break;
+				default:
 			}
 		};
 	}
