@@ -1,17 +1,50 @@
+/*video game store front
+you can create an account
+it has input validation
+you can sign in-- it actually compares your information with accounts made so if you try to sign in without creating an account
+it wont let you. normally this is done with a server, not local storage but i just felt like implementing it for fun
+also has input validation
+you can add games to cart, remove then, buy them
+you can click on the banners to take you to that specific game system or click the text links
+you can also click the GameCrunch at the top left to always take you back to the home screen
+the final version im sending only has two game system categories
+in a real version i would use something like php to store all the games and load them from the server
+i could have made it look prettier but that was spent on my game! and even that isn't that pretty! 
+*/
+
 window.onload = init;
 function init()
 {
-	var ps4 = menuView("ps4.html", "PS4", "shopping_bar");
-	var xboxOne = menuView("xboxone.html", "Xbox One", "shopping_bar");
-	var ps3 = menuView("games.html", "PS3", "shopping_bar");
-	var xbox360 = menuView("games.html", "Xbox 360", "shopping_bar");
-	var pc = menuView("games.html", "PC", "shopping_bar");
-	var wiiU = menuView("games.html", "Wii U", "shopping_bar");
-	var psvita = menuView("games.html", "PS Vita", "shopping_bar");
-	var nintendo3ds = menuView("games.html", "3DS", "shopping_bar");
+	this.numItems = localStorage.getItem("numItems");
+	//if status isnt stored in local storage then create and store
+	if (!numItems)
+	{
+		numItems = 0;
+		localStorage.setItem("numItems", JSON.stringify(numItems));
+	}
+	//else get status from local storage
+	else
+	{
+		numItems = JSON.parse(numItems);
+	}
+
+	this.cartArray = localStorage.getItem("cartArray");
+	if (!cartArray)
+	{
+		cartArray = [];
+		localStorage.setItem("cartArray", JSON.stringify(cartArray));
+	}
+	//else get status from local storage
+	else
+	{
+		cartArray = JSON.parse(cartArray);
+	}
+
+	var ps4 = display("ps4.html", "PS4", "shopping_bar");
+	var xboxOne = display("xboxone.html", "Xbox One", "shopping_bar");
 
 	var signInLink = outputSignedInStatus();
-	var shoppingCart = menuView("shoppingCart.html", "<img src='images/shoppingcart.png'>", "account_bar");
+	var shoppingCart = display("cart.html", numItems + "<img src='images/shoppingcart.png'>", "account_bar");
 
 	var path = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
 
@@ -24,12 +57,33 @@ function init()
 		var login = initSignIn();
 	}
 	
-	var createGame = createGames();
+	if (path == "ps4.html" || path == "xboxone.html")
+	{
+		var createGame = addGames();
+	}
+	if (path == "cart.html")
+	{
+		var ps4GamesArray = localStorage.getItem("ps4GamesArray");
+		var xboxOneGamesArray = localStorage.getItem("xboxOneGamesArray");
+		if(ps4GamesArray && xboxOneGamesArray)
+		{
+			ps4GamesArray = JSON.parse(ps4GamesArray);
+			xboxOneArray = JSON.parse(xboxOneGamesArray);
+
+			createCartDiv(cartArray);
+			//createCartDiv(xboxOneGamesArray);
+
+			viewCart();
+		}
+	}
+	
 	
 }
 
-function menuView(nameOfHTML, output, idName)
+//creates links
+function display(nameOfHTML, output, idName)
 {
+
 	var item = document.createElement("a");
 	item.href = nameOfHTML;
 	item.innerHTML = output;
@@ -52,68 +106,118 @@ function checkStatus(nameOfHTML, output, idName)
 	}
 }
 
-function createGames()
+//add items to cart
+function addToCart()
 {
-	//normally this would all be done with a server and uploaded dynamically
-	//however since local storage is limited in size and I'm using jpeg files I decided to hardcode it
-	var ps4game1 = new game("ps4", "Uncharted4", 59.99, "<img src='images/ps4/game1ps4.jpg'>");
-	var ps4game2 = new game("ps4", "Overwatch", 59.99, "<img src='images/ps4/game2ps4.jpg'>");
-	var ps4game3 = new game("ps4", "No Mans Sky", 59.99, "<img src='images/ps4/game3ps4.jpg'>");
-	var ps4game4 = new game("ps4", "Mirrors Edge Catalyst", 59.99, "<img src='images/ps4/game4ps4.jpg'>");
-	var ps4game5 = new game("ps4", "NBA2k17", 59.99, "<img src='images/ps4/game5ps4.jpg'>");
+	//iterate cart items
+	numItems++;
+	localStorage.setItem("numItems", JSON.stringify(numItems));
 
-	var ps4GamesArray = [ps4game1, ps4game2, ps4game3, ps4game4, ps4game5];
-
-	var xboxonegame1 = new game("xboxone", "Overwatch", 59.99, "<img src='images/xboxone/game1xboxone.jpg'>");
-	var xboxonegame2 = new game("xboxone", "Mirrors Edge Catalyst", 59.99, "<img src='images/xboxone/game2xboxone.jpg'>");
-	var xboxonegame3 = new game("xboxone", "Grand Theft Auto V", 59.99, "<img src='images/xboxone/game3xboxone.jpg'>");
-	var xboxonegame4 = new game("xboxone", "NBA2k17", 59.99, "<img src='images/xboxone/game4xboxone.jpg'>");
-	var xboxonegame5 = new game("xboxone", "Doom", 59.99, "<img src='images/xboxone/game5xboxone.jpg'>");
-
-	var xboxOneGamesArray = [xboxonegame1, xboxonegame2, xboxonegame3, xboxonegame4, xboxonegame5];
-	/*after doing it this way i should have just used local storage. oh well.*/
-
-	var path = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
-
-	if (path == "ps4.html")
+	//create game info object to get game information
+	var currGameInfo = 
 	{
-		var showGames = displayGames(ps4GamesArray);
+		pageName: "cart.html",
+		imageName: "<img src ='images/" + this.id + ".jpg'>",
+		gameName: this.id
+	}
 
-	}
-	else if (path == "xboxone.html")
-	{
-		var showGames = displayGames(xboxOneGamesArray);
-	}
+	//push to cart
+	cartArray.push(currGameInfo);
+	localStorage.setItem("cartArray", JSON.stringify(cartArray));
 
 }
 
-function displayGames(gamesArray)
+//this just displays a link and sets its onclick property to a function
+function displayAndDo(nameOfHTML, output, idName, doSomething)
 {
+	var item = document.createElement("a");
+	item.href = nameOfHTML;
+	item.innerHTML = output;
+	document.getElementById(idName).appendChild(item);
+
+	document.getElementById(idName).onclick = doSomething;
 	
-	for (var i = 0; i < gamesArray.length; i++)
-	{
-		menuView("games.html", gamesArray[i].gameImage  + "<br>" + "&nbsp&nbsp&nbsp&nbsp$" + gamesArray[i].gamePrice + "<br><br>", "gamelist")
-		menuView("games.html", "Add to cart" + "<br><br>", "gamelist");	
-	}
 }
 
-function getGamesArray(gameSystem)
+//view cart
+function viewCart()
 {
-	var gamesArray = localStorage.getItem(gameSystem + "gamesArray");
-	//if no game array is in local storage create one and store it
-	if (!gamesArray)
+	var page = [];
+	var image = [];
+	var game = [];
+	
+
+	var buy = displayAndDo("thankyou.html", "Buy", "buyItems", buyItems);
+	var clearFromCart = displayAndDo("cart.html", "Clear Cart", "cartOptions", clearCart);
+
+
+	//this just allows you to view whats in cart
+	for (var i = 0; i < cartArray.length; i++)
 	{
-		gameArray = [];
-		localStorage.setItem(gameSystem + "gamesArray", JSON.stringify(gamesArray));
+		page.push(cartArray[i].pageName);
+		image.push(cartArray[i].imageName);
+		game.push(cartArray[i].gameName);
+
+		display(page[i], image[i], game[i]);
 	}
-	//else get game array from local storage
-	else
+
+	var totalPrice = 0;
+
+	var ps4GamesArray = localStorage.getItem("ps4GamesArray");
+	var xboxOneGamesArray = localStorage.getItem("xboxOneGamesArray");
+	ps4GamesArray = JSON.parse(ps4GamesArray);
+	xboxOneGamesArray = JSON.parse(xboxOneGamesArray);
+
+	//check to see if any games in cart matches xbox array and get price
+	for (var i = 0; i < cartArray.length; i++)
 	{
-		gameArray = JSON.parse(gamesArray);
+		for (var j = 0; j < xboxOneGamesArray.length; j++)
+		{
+			if (cartArray[i].gameName == xboxOneGamesArray[j].gameTitle)
+			{
+				totalPrice += xboxOneGamesArray[j].gamePrice;
+				
+			}
+			
+		}
 	}
-	return gameArray;
+
+	//check to see if any games in cart match ps4 games array and get price
+	for (var i = 0; i < cartArray.length; i++)
+	{
+		for (var j = 0; j < ps4GamesArray.length; j++)
+		{
+			if (cartArray[i].gameName == ps4GamesArray[j].gameTitle)
+			{
+				totalPrice += ps4GamesArray[j].gamePrice;
+				
+			}
+			
+		}
+	}
+
+	//displays total price
+	var showPrice = document.createElement("div");
+	showPrice.innerHTML = "Total Price: $" + totalPrice;
+	document.getElementById("totalprice").appendChild(showPrice);
 }
 
+//clear items from cart
+function clearCart()
+{
+	cartArray = [];
+	localStorage.setItem("cartArray", JSON.stringify(cartArray));
+	numItems = 0;
+	localStorage.setItem("numItems", JSON.stringify(numItems));
+}
+
+//buy items
+function buyItems()
+{
+	clearCart();
+}
+
+//game constructer
 function game(system, title, price, image)
 {
 	this.gameSystem = system;
@@ -122,6 +226,98 @@ function game(system, title, price, image)
 	this.gameImage = image;
 }
 
+function addGames()
+{
+	//normally this would all be done with a server and uploaded dynamically
+	//however since local storage is limited in size and I'm using jpeg files I decided to hardcode it
+	var ps4game1 = new game("ps4", "ps4Uncharted 4", 59.99, "<img src='images/ps4Uncharted 4.jpg'>");
+	var ps4game2 = new game("ps4", "ps4Overwatch", 59.99, "<img src='images/ps4Overwatch.jpg'>");
+	var ps4game3 = new game("ps4", "ps4No Mans Sky", 59.99, "<img src='images/ps4No Mans Sky.jpg'>");
+	var ps4game4 = new game("ps4", "ps4Mirrors Edge Catalyst", 59.99, "<img src='images/ps4Mirrors Edge Catalyst.jpg'>");
+	var ps4game5 = new game("ps4", "ps4NBA2k17", 59.99, "<img src='images/ps4NBA2k17.jpg'>");
+
+	var ps4GamesArray = [ps4game1, ps4game2, ps4game3, ps4game4, ps4game5];
+
+	var xboxonegame1 = new game("xboxone", "xboxoneOverwatch", 59.99, "<img src='images/xboxoneOverwatch.jpg'>");
+	var xboxonegame2 = new game("xboxone", "xboxoneMirrors Edge Catalyst", 59.99, "<img src='images/xboxoneMirrors Edge Catalyst.jpg'>");
+	var xboxonegame3 = new game("xboxone", "xboxoneGrand Theft Auto V", 59.99, "<img src='images/xboxoneGrand Theft Auto V.jpg'>");
+	var xboxonegame4 = new game("xboxone", "xboxoneNBA2k17", 59.99, "<img src='images/xboxoneNBA2k17.jpg'>");
+	var xboxonegame5 = new game("xboxone", "xboxoneDoom", 59.99, "<img src='images/xboxoneDoom.jpg'>");
+
+	var xboxOneGamesArray = [xboxonegame1, xboxonegame2, xboxonegame3, xboxonegame4, xboxonegame5];
+	/*after doing it this way i should have just used local storage. oh well.*/
+
+	var path = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+
+	//execute if on ps4 page
+	if (path == "ps4.html")
+	{
+		var showGames = displayGames(ps4GamesArray);
+
+	}
+	//execute if on xboxone page
+	else if (path == "xboxone.html")
+	{
+		var showGames = displayGames(xboxOneGamesArray);
+	}
+
+	//only execute if its the first time
+	if (ps4Games != 1 && xboxOneGames != 1)
+	{
+		localStorage.setItem("ps4GamesArray", JSON.stringify(ps4GamesArray));
+	    localStorage.setItem("xboxOneGamesArray", JSON.stringify(xboxOneGamesArray));
+	}
+
+    //set each to one
+	var ps4Games = localStorage.getItem("ps4Games");
+	if (!ps4Games)
+	{
+		ps4Games = 1;
+		localStorage.setItem("ps4Games", JSON.stringify(ps4Games));
+	}
+	var xboxOneGames = localStorage.getItem("xboxOneGames");
+	if (!xboxOneGames)
+	{
+		xboxOneGames = 1;
+		localStorage.setItem("xboxOneGames", JSON.stringify(xboxOneGames));
+	}
+
+}
+
+//create for cart page
+function createCartDiv(cartArray)
+{
+	var elementid = [];
+
+	for (var i = 0; i < cartArray.length; i++)
+	{
+		elementid[i] = document.createElement("div");
+		elementid[i].id = cartArray[i].gameName;
+		document.getElementById("cart").appendChild(elementid[i]);
+	}
+}
+
+
+//display games
+function displayGames(gamesArray)
+{
+	var gameArray = [];
+	var elementid = [];
+	var parentDiv = [];
+	
+	//displays games in game pages
+	for (var i = 0; i < gamesArray.length; i++)
+	{
+		elementid[i] = document.createElement("div");
+		elementid[i].id = gamesArray[i].gameTitle;
+		document.getElementById("gamelist").appendChild(elementid[i]);
+
+		gameArray[i] = (displayAndDo("cart.html", gamesArray[i].gameImage  + "<br>" + "&nbsp&nbsp&nbsp&nbsp$" 
+			+ gamesArray[i].gamePrice + "<br><br>", elementid[i].id, addToCart))
+	}
+}
+
+
 //sign user out
 function signOut()
 {
@@ -129,7 +325,7 @@ function signOut()
 	localStorage.setItem("signedIn", JSON.stringify(signedIn));
 }
 
-
+//initiate sign in function
 function initSignIn()
 {
 	var button = document.getElementById("signIn");
@@ -144,12 +340,14 @@ function signIn()
 
 	var userArray = getUserInfo();
 
+	//create object for email and password information
 	var userObj = 
 	{
 		email: useremail,
 		password: userpassword
 	}
 
+	//this is to determine if user has signed in
 	for (var i = 0; i < userArray.length; i++)
 	{
 		if (userObj.email === userArray[i].email && userObj.password === userArray[i].password)
@@ -161,7 +359,6 @@ function signIn()
 			
 		}
 	}
-
 
 	noMatchError.style.color = 'red';
 	document.getElementById('noMatchError').innerHTML = "The email address and password you entered are incorrect.";
@@ -228,6 +425,12 @@ function createAccount()
 		var userArray = getUserInfo();
 		userArray.push(userObj);
 		localStorage.setItem("userArray", JSON.stringify(userArray));
+
+ 		if(userArray)
+ 		{
+ 			window.location.replace("signedUp.html");
+ 		}
+		
 	}		
 }
 

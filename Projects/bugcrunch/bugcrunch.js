@@ -2,31 +2,45 @@
 /*
 the object of the game is to dodge the rocks falling from the sky
 you can either press the a key to move left or the d key to move right
+if you don't read this it's okay because the very first time you play it will show you which keys to press
+high scores are stored, so if you beat previous high score it will show it after the game
+press enter during game over screen to start over
+it will only do it the very first time you play since i store whether you've played or not into local storage
 this was actually really fun to make. 
-building something from the ground up and watching it in action is great!*/
+building something from the ground up and watching it in action is great!
+*/
 
+
+//this is the variable for background images
+//made it global for the sake of making screen background changes easier
+var bgimg = "images/startScreen.png";
 
 var init = function()
 {
-    this.bgw = 960;
-    this.bgh = 600;
-    this.lastSec = 0;
-    this.bugx = 400;
+
+	this.bgw = 960;
+	this.bgh = 600;
+	this.lastSec = 0;
+	this.bugx = 400;
     this.bugy = 480;
     this.bugw = 115;
     this.bugh = 100;
+    this.aKeyX = 50;
+    this.aKeyY = 500;
+    this.dKeyX = 860;
+    this.dKeyY = 500;
     this.rockArrayLength = 5;
     //initialize array for random rock positions
     this.randObjArry = [];
-    for (var i = 0; i < rockArrayLength; i++)
-    {
-	this.randxy = 
+	for (var i = 0; i < rockArrayLength; i++)
 	{
-		randx: Math.floor(Math.random() * (750 - 1) + 1),
-		randy: Math.floor(Math.random() * (750 - 1) + 1) - 1000
-	};
-	this.randObjArry.push(this.randxy);
-    }
+		this.randxy = 
+		{
+			randx: Math.floor(Math.random() * (750 - 1) + 1),
+			randy: Math.floor(Math.random() * (750 - 1) + 1) - 1000
+		};
+		this.randObjArry.push(this.randxy);
+	}
 
     this.rockw = 100;
     this.rockh = 90;
@@ -36,7 +50,41 @@ var init = function()
     this.dead = false;
     this.gameOver = false;
     this.movement = "none";
-    this.bgimg = "images/startScreen.png"
+    this.aKeyPressed = false;
+    this.dKeyPressed = false;
+    //this.bgimg = "images/startScreen.png"
+
+
+    //this will be used to determine if its the players first game
+	this.tutorial = localStorage.getItem("tutorial");
+	//if status isnt stored in local storage then create and store
+	if (!tutorial)
+	{
+		tutorial = 0;
+		localStorage.setItem("tutorial", JSON.stringify(tutorial));
+	}
+	//else get first game status
+	else
+	{
+		tutorial = JSON.parse(tutorial);
+	}
+
+
+	this.newHighScore = false;
+	//this will be used to determine if its the players first game
+	this.highScore = localStorage.getItem("highScore");
+	//if status isnt stored in local storage then create and store
+	if (!highScore)
+	{
+		highScore = 0;
+		localStorage.setItem("highScore", JSON.stringify(highScore));
+	}
+	//else get first game status
+	else
+	{
+		highScore = JSON.parse(highScore);
+	}
+	
     startMenu();
     	
 };
@@ -79,56 +127,109 @@ var startMenu = function()
 //start game
 var startGame = function()
 {
+	
 	if (!dead)
 	{
 		var someBug = new bug();
-		var someRocksArry = [];
-		var curScore = new text();
 
-		var date = new Date();
-		var curTime = date.getMilliseconds()/1000;
+		//if it isnt the players first game then skip tutorial
+		if (tutorial > 0)
+		{
+			var someRocksArry = [];
+			var curScore = new text('score', 'Score: ', score, 805, 50);
+			curScore.drawText();
 
-		if(lastSec != curTime)
-		{
-			lastSec = curTime;
-		}
-		if(lastSec == curTime)
-		{
-			checkScore++;
-		}
-		if (score < checkScore/50)
-		{
-			score++;
-		}
+			var date = new Date();
+			var curTime = date.getMilliseconds()/1000;
+
+			if(lastSec != curTime)
+			{
+				lastSec = curTime;
+			}
+			if(lastSec == curTime)
+			{
+				checkScore++;
+			}
+			if (score < checkScore/50)
+			{
+				score++;
+			}
 
 	
-		//create array of rock objects
-		for (var i = 0; i < rockArrayLength; i++)
-		{
-			someRocksArry.push(new rock(randObjArry[i]));
-		}
+			//create array of rock objects
+			for (var i = 0; i < rockArrayLength; i++)
+			{
+				someRocksArry.push(new rock(randObjArry[i]));
+			}
 
-		//check to see if any rocks in array of rocks hit bug
-		for (var i = 0; i < rockArrayLength; i++)
-		{
-			if(checkCollision(someRocksArry[i], someBug))
+			//check to see if any rocks in array of rocks hit bug
+			for (var i = 0; i < rockArrayLength; i++)
+			{
+				if(checkCollision(someRocksArry[i], someBug))
+				{
+					dead = true;
+				}
+			}
+
+			//determine if bug goes off screen
+			if (someBug.offScreen())
 			{
 				dead = true;
 			}
 		}
-
-		if (someBug.offScreen())
+		//do tutorial
+		else
 		{
-			dead = true;
+			var aKey = new keys(aKeyX, aKeyY, 80, 80, 'images/A.png', 'aKey');
+			var dKey = new keys(dKeyX, dKeyY, 80, 80, 'images/D.png', 'dKey');
+
+			if (dKeyPressed && aKeyPressed)
+			{
+				tutorial++;
+			}
+
+			if(!aKeyPressed)
+			{
+				aKey.drawKey();
+			}
+			else
+			{
+				aKey.clearKey();
+			}
+
+			if(!dKeyPressed)
+			{
+				dKey.drawKey();	
+			}
+			else
+			{
+				dKey.clearKey();
+			}
+			localStorage.setItem("tutorial", JSON.stringify(tutorial));
+
 		}
 	}
 	else
 	{
 		gameOver();
 	}
+		
 
 	this.gameOver = function()
 	{
+		var displayHighScore = new text('highscore', 'New High Score: ', score, 715, 50);
+		if (score > highScore)
+		{
+			highScore = score;
+			newHighScore = true;
+		}
+		localStorage.setItem("highScore", JSON.stringify(highScore));
+
+		if (newHighScore)
+		{
+			displayHighScore.drawText();
+		}
+
 		//game overscreen
 		var canvas = document.getElementById('background', 'images/gameover.png');
 		var ctx = canvas.getContext('2d');
@@ -142,13 +243,28 @@ var startGame = function()
 		bgObj.src = 'images/gameover.png';
 
 		curScore.clearScore();
+
 		someBug.clearBug();
-		gameloop = clearInterval(gameloop);
-		init();
+		
+
+		document.onkeydown = function(e)
+		{
+			e = e || window.event;
+			var key = e.which || e.keyCode;
+			switch(key)
+			{
+				case 13: 
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					bgimg = 'images/sky.png';
+    				this.movement = "none";
+    				displayHighScore.clearScore();
+    				init();
+				break;
+			default:
+			}
+		};
 	}
-
 }
-
 //check to see if rock hits bug
  function checkCollision(obj1, obj2)
 {
@@ -163,22 +279,50 @@ var startGame = function()
 	}
 };
 
-function text()
+//draw keys for tutorial
+function keys(keyx, keyy, keyw, keyh, images, keyid)
 {
-	var canvas = document.getElementById('score');
+	var canvas = document.getElementById(keyid, images);
 	var ctx = canvas.getContext('2d');
-	ctx.fillStyle = "green";
-	ctx.font = "21px Georgia";
-	ctx.fillText("score" + score, 805, 50);
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.fillText("score: " + score, 805, 50);
+	var keyObj = new Image();
+	
+	this.drawKey = function()
+	{
+		ctx.drawImage(keyObj, keyx, keyy, keyw, keyh);
+
+	};
+	
+	keyObj.src = images;
+
+	this.clearKey = function()
+	{
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+	};
+
+	this.clearKey();
+}
+
+//draws text
+function text(id, text, num, x, y)
+{
+	var canvas = document.getElementById(id);
+	var ctx = canvas.getContext('2d');
+	this.drawText = function()
+	{
+		ctx.fillStyle = "green";
+		ctx.font = "21px Georgia";
+		ctx.fillText(text + num, x, y);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillText(text + num, x, y);
+	}
+	
 
 	this.clearScore = function()
 	{
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
-	
 };
+
 
 //rock object
 function rock(pos)
@@ -301,8 +445,10 @@ function bug()
 		{
 			case 68: 
 				movement = "right";
+				dKeyPressed = true;
 				break;
 			case 65:
+				aKeyPressed = true;
 				movement = "left";
 				break;
 			default:
@@ -312,11 +458,11 @@ function bug()
 	//move bug
 	this.moveBug = function(movement)
 	{
-		if(movement == "right")
+		if(movement == "right" && bugx <= 961 - bugw)
 		{
 			bugx += 5;
 		}
-		else if(movement == "left")
+		else if(movement == "left" && bugx >= 0)
 		{
 			bugx -= 5;
 		}

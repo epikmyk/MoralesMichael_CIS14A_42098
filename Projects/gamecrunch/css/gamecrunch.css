@@ -7,12 +7,15 @@
 }
 #content {
 	text-align: center;			
-	width: 910px;						
-	overflow: auto;								
+	width: 910px;														
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5px;			
 	padding: 5px;
+}
+
+#banners {
+	margin-top: 20px;
 }
 #menu_bar {
 	text-align: center;
@@ -53,7 +56,7 @@
 }
 
 #gamelist {
-	text-align: left;
+	
 	margin: 20px;
 }
 

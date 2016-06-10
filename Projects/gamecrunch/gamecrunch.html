@@ -18,6 +18,29 @@
 			<div id="shopping_bar"></div>
 			<div id="account_bar"></div>
 		</div>
+		<script>
+			var pages = ["ps4.html", "xboxone.html"];
+			var images = ["images/ps4banner.jpg", "images/xboxonebanner.jpg"];
+			var i = 0;
+			var nextImage = setInterval(function()
+			{
+				if(pages.length == i)
+				{
+					i = 0;
+				}
+				else
+				{
+					document.getElementById("bannerImage").src = images[i];
+					document.getElementById("bannerPage").href = pages[i];
+					
+					i++;
+				}
+			}, 3000);
+		</script>
+		<div id="banners">
+			<a id ="bannerPage" href="ps4.html">
+			<img id="bannerImage" src="images/ps4banner.jpg" width="864" height="240" alt="banner">
+	</div>
 	</div>
 </body>
 </html>
